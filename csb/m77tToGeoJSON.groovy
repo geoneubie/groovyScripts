@@ -8,6 +8,11 @@ def tokens = []
 def pts = []
 def ids = []
 
+def sb = new StringBuffer( )
+
+
+sb << "\"features\": ["
+
 new File( 'resources/95003.m77t' ).eachLine { line ->
   //println line
   tokens = line.tokenize( '\t' )
@@ -21,7 +26,6 @@ new File( 'resources/95003.m77t' ).eachLine { line ->
 }
 
 def jsonFile = new File( 'resources/95003.json' )
-def sb = new StringBuffer( )
 def i = 0
 pts.each { pt ->
     // Create the GeoJSON feature
@@ -39,7 +43,9 @@ pts.each { pt ->
 
     
     sb <<= "${jb.toPrettyString( )}\n"
+    
     i++
 }
+sb << "]"
 
 println sb
