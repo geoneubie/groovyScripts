@@ -10,13 +10,51 @@ def ids = []
 
 def sb = new StringBuffer( )
 
+def metaJb =  new JsonBuilder()
+Map meta = metaJb {
+    type "FeatureCollection"
+    crs {
+        type "name"
+        properties {
+            name "EPSG:4326"
+        }
+    }
+    properties {
+        convention "CSB 1.0"
+        platform {
+            type "Ship"
+            name "NG Endeavor; NG Explorer"
+            sensors { 
+                sounder {
+                    type "Single beam sounder"
+                    make "Furuno echo sounder"
+                }
+                gps {
+                    make ""
+                    model ""
+                }
+            }
+            
+        }
+        providerContactPoint {
+            hasEmail "explore@expeditions.com"
+        }
+        processorContactPoint {
+            hasEmail "explore@expeditions.com"
+        }
+        ownerContactPoint {
+            hasEmail "explore@expeditions.com"
+        }
+        depthUnits "meters"
+        timeUnits "UTC"
+    }    
+}
+sb << "${metaJb.toPrettyString()}\n\"features\": ["
 
-sb << "\"features\": ["
-
-new File( 'resources/95003.m77t' ).eachLine { line ->
+new File( 'resources/95003-10.m77t' ).eachLine { line ->
   //println line
   tokens = line.tokenize( '\t' )
-  println tokens
+  //println tokens
   id = tokens[0]
   lat = tokens[4]
   lon = tokens[5]
@@ -29,8 +67,8 @@ def jsonFile = new File( 'resources/95003.json' )
 def i = 0
 pts.each { pt ->
     // Create the GeoJSON feature
-    def jb = new JsonBuilder( )
-    Map feature = jb {
+    def featJb = new JsonBuilder( )
+    Map feature = featJb {
         type 'Feature'
         geometry {
             type 'Point'
@@ -42,7 +80,7 @@ pts.each { pt ->
     }
 
     
-    sb <<= "${jb.toPrettyString( )}\n"
+    sb <<= "${featJb.toPrettyString( )}\n"
     
     i++
 }
